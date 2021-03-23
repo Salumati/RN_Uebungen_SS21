@@ -1,2 +1,2 @@
 # RN_Uebungen_SS21
-A Repository for the exerxise and programms from the Rechnernetze lessons
+Solutions to the exercises proposed in the Rechnernetze SS21 lecture.
