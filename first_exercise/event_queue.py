@@ -10,14 +10,9 @@ class EventQueue:
     def push(self, event):
         heapq.heappush(self.queue, event)
         return
-        
-    def start(self):
-        while True:
-            self.do()
-        return
 
-    def do(self):
+    def work(self):
         for ev in self.queue:
-            ev.do()
+            ev.execute()
         return
     

@@ -1,21 +1,20 @@
 import event
 import event_queue
+import time
 
 class Station:
-    def __init__(self, name, servingTime):
+    def __init__(self, name, servingTime = 0):
         self.name = name
         self.servingTime = servingTime
-        self.customerQueue = []  # todo: queue
+        # TODO: Use queue structure
+        self.customerQueue = []
 
-    def queueCustomer(self, customer):
-        self.customerQueue.append(customer)
+    def queueCustomer(self, customer, maxWait):
+        if len(self.customerQueue) <= maxWait:
+            self.customerQueue.append(customer)
         return
         
-    def serveCustomer(self, func):
-        # calculate time customer needs (servingTime * customerObjects)
-        customer = self.customerQueue.pop()
-        timeNeeded = self.servingTime * customer.productsForStation(self.name)
-
-        # create "customer serve" event
-        func(timeNeeded)
+    def serveCustomer(self, func, servings):
+        time.sleep(self.servingTime * servings)
+        self.customerQueue.pop()
         return

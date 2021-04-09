@@ -9,7 +9,7 @@ class Event:
         self.func = func
         self.args = args
 
-    def do(self):
+    def execute(self):
         return self.func(self.args)
 
     def __eq__(self, other):
