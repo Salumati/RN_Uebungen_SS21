@@ -14,5 +14,16 @@ class EventQueue:
     def work(self):
         for ev in self.queue:
             ev.execute()
+            # TODO: calc stats
         return
     
+
+    def isNotEmpty(self):
+        return len(self.queue) > 0
+
+    def __str__(self):
+        res = ""
+        while self.isNotEmpty():
+            ev = self.queue.pop()
+            res += str(ev) + "\n"
+        return res

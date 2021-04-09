@@ -14,7 +14,16 @@ class Station:
             self.customerQueue.append(customer)
         return
         
-    def serveCustomer(self, func, servings):
-        time.sleep(self.servingTime * servings)
+    def serveCustomer(self, servings):
+        #self.work(servings)
         self.customerQueue.pop()
         return
+
+    def work(self, servings):
+        time.sleep(self.servingTime * servings)
+
+    def queuedCustomers(self):
+        return len(self.customerQueue)
+
+    def isNotEmpty(self):
+        return len(self.customerQueue) > 1
