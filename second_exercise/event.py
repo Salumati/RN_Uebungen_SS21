@@ -34,8 +34,6 @@ class Event:
         return self.func(self.args)
 
     def __lt__(self, other):
-        print(self, other, (self.time, self.priority, self.id) < (other.time, other.priority, other.id))
-
         return (self.time, self.priority, self.id) < (other.time, other.priority, other.id)
 
     def __str__(self):

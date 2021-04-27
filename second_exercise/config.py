@@ -1,0 +1,9 @@
+sleepFactor = 1/100
+terminateFactor = 1/10
+# in seconds
+customerK1StartTime = 0
+customerK1SpawnTime = 200
+customerK2StartTime = 1
+customerK2SpawnTime = 60
+# in minutes
+terminateAfter = 30
