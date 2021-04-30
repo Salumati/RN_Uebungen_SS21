@@ -5,6 +5,8 @@ from station_visit import StationVisit
 from config import customerK1StartTime, customerK1SpawnTime, customerK2StartTime, customerK2SpawnTime, terminateAfter, terminateFactor
 from threading import Thread, Event
 import time
+from statistics import Statistics
+
 
 class Supermarket:
     def __init__(self):
@@ -17,6 +19,8 @@ class Supermarket:
         cheese = Station("Käse", 60)
         checkout = Station("Kasse", 5)
         outrance = Station("Ausgang")
+
+        self.stations = [entrance, baker, sausage, cheese, checkout, outrance]
 
         stationVisitsK1 = [StationVisit(entrance, customerK1SpawnTime), StationVisit(baker, 10, 10, 10), StationVisit(
             sausage, 30, 5, 10), StationVisit(cheese, 45, 3, 5), StationVisit(checkout, 60, 30, 30), StationVisit(outrance, 0)]
@@ -37,11 +41,22 @@ class Supermarket:
         self.terminate.set()
 
         self.eventQueue.work()
+
+    def print(self):
         l = list(self.eventQueue.queue)
         l.sort()
         for i in l:
             print(i)
+        print("served customers: ", Statistics.servedCustomers())
+        print("average shopping time K1: ",
+              Statistics.averageCompleteShoppingTime("K1"))
+        print("average shopping time K2: ",
+              Statistics.averageCompleteShoppingTime("K2"))
+        for station in self.stations:
+            print("dropped customer percentage for station: ", station,
+                  Statistics.droppedStationCustomerPercentages(station))
 
 
 supermarket = Supermarket()
 supermarket.run()
+supermarket.print()

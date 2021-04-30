@@ -1,33 +1,51 @@
 class Statistics:
-    def __init__(self, customers):
-        self._servedCustomers = []
-        self.droppedStations = {}
-        self._completeShoppingTimes = {}
-        self.customers = customers
+    _servedCustomers = []
+    customers = []
+    droppedStationCustomers = {}
+    _completeShoppingTimes = {}
 
-    def setLastCustomerDate(self, customer, date):
-        return
+    @staticmethod
+    def addCustomer(customer):
+        Statistics.customers.append(customer)
 
-    def addServedCustomer(self, customer):
-        return
+    @staticmethod
+    def setLastCustomerTime(customer, time):
+        Statistics._lastCustomerTime = {customer: time}
 
-    def setCompleteShoppingTime(self, customer, time):
-        return
+    @staticmethod
+    def addServedCustomer(customer):
+        Statistics._servedCustomers.append(customer)
 
-    def addDroppedStationPercentage(self, droppingCustomers):
-        return
+    @staticmethod
+    def setCompleteShoppingTime(customer, time):
+        Statistics._completeShoppingTimes[customer] = time
 
-    def lastCustomerDate(self):
-        return
+    @staticmethod
+    def addDroppedStationCustomers(station, droppedCustomers):
+        Statistics.droppedStationCustomers[station] = droppedCustomers
+
+    @staticmethod
+    def lastCustomerTime():
+        return Statistics._lastCustomerTime
     
-    def servedCustomers(self):
-        return
+    @staticmethod
+    def servedCustomers():
+        return Statistics._servedCustomers
 
-    def completeShoppingTimes(self):
-        return
+    @staticmethod
+    def completeShoppingTimes():
+        return Statistics._completeShoppingTimes
 
-    def averageCompleteShppingTime(self):
-        return
+    @staticmethod
+    def averageCompleteShoppingTime(customerType):
+        shoppingTimes = []
+        totalTime = 0
+        for k, v in Statistics._completeShoppingTimes.items():
+            if k.split('-')[0] == customerType:
+                shoppingTimes.append(v)
+                totalTime += v
+        return totalTime / len(shoppingTimes)
     
-    def droppedStationPercentages(self):
-        return
+    @staticmethod
+    def droppedStationCustomerPercentages(station):
+        return Statistics.droppedStationCustomers[station] / Statistics.customers
