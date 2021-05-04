@@ -1,5 +1,5 @@
 sleepFactor = 1/100
-terminateFactor = 1/10
+terminateFactor = 1/100000
 # in seconds
 customerK1StartTime = 0
 customerK1SpawnTime = 200

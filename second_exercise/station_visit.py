@@ -10,10 +10,12 @@ class StationVisit:
         self.maxWait = maxWait
         self.hasBeenVisited = False
 
-    def do(self):
+    def do(self, customer):
         self.hasBeenVisited = True
-        print("entering ", self.station)
-        time.sleep(self.arrivalTime * sleepFactor)
+        print(customer.name + " is entering ", self.station.name)
+        self.queue(customer)
+        self.serve()
+        # time.sleep(self.arrivalTime * sleepFactor)
         return
 
     def visited(self):
@@ -26,6 +28,7 @@ class StationVisit:
         self.station.serveCustomer(self.servings)
 
     def shouldNotSkip(self):
+        # needs locks
         return self.maxWait >= self.station.queuedCustomers()
 
     def servingTime(self):

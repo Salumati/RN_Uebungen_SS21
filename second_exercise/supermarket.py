@@ -21,6 +21,13 @@ class Supermarket:
         outrance = Station("Ausgang")
 
         self.stations = [entrance, baker, sausage, cheese, checkout, outrance]
+        Statistics.stations = {
+            "ent": entrance,
+            "bak": baker,
+            "sau": sausage,
+            "cheese": cheese,
+            "chout": checkout,
+            "out": outrance}
 
         stationVisitsK1 = [StationVisit(entrance, customerK1SpawnTime), StationVisit(baker, 10, 10, 10), StationVisit(
             sausage, 30, 5, 10), StationVisit(cheese, 45, 3, 5), StationVisit(checkout, 60, 30, 30), StationVisit(outrance, 0)]
@@ -28,25 +35,32 @@ class Supermarket:
             sausage, 30, 2, 5), StationVisit(checkout, 60, 3, 20), StationVisit(baker, 3, 20), StationVisit(outrance, 0)]
 
         self.customerK1 = Customer(
-            "K1", stationVisitsK1, customerK1StartTime, self.eventQueue.push, self.eventQueue.pop, self.terminate)
+            "K1-1", stationVisitsK1, customerK1StartTime, self.eventQueue.push, self.eventQueue.pop, self.terminate)
 
         self.customerK2 = Customer(
-            "K2", stationVisitsK2, customerK2StartTime, self.eventQueue.push, self.eventQueue.pop, self.terminate)
+            "K2-1", stationVisitsK2, customerK2StartTime, self.eventQueue.push, self.eventQueue.pop, self.terminate)
 
     def run(self):
         self.customerK1.start()
         self.customerK2.start()
 
-        time.sleep(terminateAfter * terminateFactor)
+        print("made customers, going to sleep")
+        # time.sleep(1)
         self.terminate.set()
+        print("customersproduction has be terminated")
 
         self.eventQueue.work()
 
     def print(self):
+        """
         l = list(self.eventQueue.queue)
         l.sort()
         for i in l:
             print(i)
+        """
+        Statistics.showStatistics()
+
+        """
         print("served customers: ", Statistics.servedCustomers())
         print("average shopping time K1: ",
               Statistics.averageCompleteShoppingTime("K1"))
@@ -54,7 +68,7 @@ class Supermarket:
               Statistics.averageCompleteShoppingTime("K2"))
         for station in self.stations:
             print("dropped customer percentage for station: ", station,
-                  Statistics.droppedStationCustomerPercentages(station))
+                  Statistics.droppedStationCustomerPercentages(station))"""
 
 
 supermarket = Supermarket()

@@ -1,8 +1,10 @@
 from copy import deepcopy
 import time
+from statistics import Statistics
 from threading import Thread, Timer
 from event import Event, EventType, EventArgs
 from config import sleepFactor
+
 
 
 class Customer(Thread):
@@ -14,6 +16,9 @@ class Customer(Thread):
         self.appendEvent = appendEvent
         self.removeEvent = removeEvent
         self.terminate = terminate
+        self.totalTimeInMarket = 0
+        self.didCompleteShopping = True
+        # we assume the customer will visit all stations and set it false if they skip at least one
 
     def run(self):
         if self.terminate.is_set():
@@ -22,8 +27,9 @@ class Customer(Thread):
         self.startShopping()
         self.enter()
         self.spawnNext()
-
         return
+
+
 
     def arriveStation(self, args):
         if args.stationId == len(self.stationVisits):
@@ -32,8 +38,9 @@ class Customer(Thread):
         stationVisit = self.stationVisits[args.stationId]
 
         time = args.time + stationVisit.arrivalTime
+        self.totalTimeInMarket += time
         if stationVisit.shouldNotSkip():
-            stationVisit.do()
+            stationVisit.do(self)
             if stationVisit.station.isNotEmpty():
                 stationVisit.queue(self)
             else:
@@ -41,6 +48,7 @@ class Customer(Thread):
                                  self.work, EventArgs(args.stationId, time)))
 
         else:
+            self.didCompleteShopping = False
             self.appendEvent(Event(EventType.ENTER_STATION, time, 2,
                              self.arriveStation, EventArgs(args.stationId+1, time)))
 
@@ -69,17 +77,18 @@ class Customer(Thread):
 
     def spawn(self):
         print("spawning ", self.name)
+        Statistics.addCustomer(self)
         time.sleep(self.startTime * sleepFactor)
 
     def enter(self):
-        self.stationVisits[0].do()
+        self.stationVisits[0].do(self)
 
     def spawnNext(self):
         customer = Customer(self.name, self.stationVisits, self.startTime,
                             self.appendEvent, self.removeEvent, self.terminate)
         nameSplit = self.name.split("-")
         if len(nameSplit) > 1:
-            customer.name = f'{nameSplit[0]}-{nameSplit[1]+1}'
+            customer.name = f'{nameSplit[0]}-{int(nameSplit[1])+1}'
         else:
             customer.name = f'{nameSplit[0]}'
 
