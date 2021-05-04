@@ -10,8 +10,8 @@ class Station:
         # TODO: Use queue structure
         self.customerQueue = []
         self.lastCustomer = None
-        self.servedCustomers = 0
-        self.customerThatLeft = 0
+        self.totalServedCustomers = 0
+        self.totalLeapCustomers = 0
 
     def queueCustomer(self, customer, maxWait):
         if len(self.customerQueue) <= maxWait:
@@ -24,7 +24,7 @@ class Station:
         customer = self.customerQueue.pop()
         print(customer + "was served in" + self.name)
         self.lastCustomer = customer
-        self.servedCustomers = 1
+        self.totalServedCustomers = 1
         return
 
     def work(self, servings):

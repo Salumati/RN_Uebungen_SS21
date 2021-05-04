@@ -5,6 +5,8 @@ from event import Event
 from event import EventType
 from event import EventArgs
 
+from statistics import Statistics
+
 
 class Customer:
     def __init__(self, name, stationVisits, startTime, spawnTime, addEvent, removeEvent):
@@ -14,7 +16,8 @@ class Customer:
         self.spawnTime = spawnTime
         self.appendEvent = addEvent
         self.removeEvent = removeEvent
-        self.durationOfVisit = 0
+        self.totalTimeInMarket = 0
+        self.didCompleteShopping = True
 
     def startShopping(self, endTime=18000):
         # self.start()
@@ -29,7 +32,7 @@ class Customer:
             return
             
         stationVisit = self.stationVisits[args.stationId]
-        self.durationOfVisit += stationVisit.arrivalTime
+        self.totalTimeInMarket += stationVisit.arrivalTime
 
         time = args.time + stationVisit.arrivalTime
         if stationVisit.shouldNotSkip():
@@ -85,4 +88,5 @@ class Customer:
             return
         customer.appendEvent = self.appendEvent
         customer.removeEvent = self.removeEvent
+        Statistics.addCustomer(customer)
         customer.startShopping()

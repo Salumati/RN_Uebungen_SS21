@@ -1,45 +1,87 @@
-import event
-import event_queue
-import time
-from threading import Lock
+class Statistics:
+    _completeCustomers = []
+    customers = []
+    stations = {}
+    droppedStationCustomers = {}
+    _completeShoppingTimes = {}
 
+    @staticmethod
+    def addCustomer(customer):
+        Statistics.customers.append(customer)
 
-class Station():
-    def __init__(self, name, servingTime=0):
-        self.name = name
-        self.lock = Lock()
-        self.servingTime = servingTime
-        self.customerQueue = []
-        self.lastCustomer = None
-        self.totalServedCustomers = 0
-        self.totalLeapCustomers = 0
+    @staticmethod
+    def showStatistics():
+        Statistics.showCustomerStatistc()
+        Statistics.showStationStatistic()
 
-    def queueCustomer(self, customer, maxWait):
-        if len(self.customerQueue) <= maxWait:
-            self.lock.acquire()
-            print(self.name + " queued customer: " + customer.name)
-            self.customerQueue.append(customer)
-            self.lock.release()
-        else:
-            self.totalLeapCustomers = self.totalLeapCustomers + 1
+    @staticmethod
+    def showStationStatistic():
+        print("\nStation statistic:")
+        for k in Statistics.stations:
+            print(" " + Statistics.stations[k].name)
+            print(" last served customer: " + str(Statistics.stations[k].lastCustomer.name) + " at " + str(
+                Statistics.stations[k].lastCustomer.totalTimeInMarket) + "s")
+            print(" number of served customers: " + str(Statistics.stations[k].totalServedCustomers))
+            print(" customer that left  out the Station: " + str(
+                Statistics.stations[k].totalLeapCustomers / Statistics.stations[k].totalServedCustomers) + "%")
+            # prozentsatz an Kunden die die station auslassen
+
+    @staticmethod
+    def showCustomerStatistc():
+        print("\nCustomer Statistic:")
+        for c in Statistics.customers:
+            if c.didCompleteShopping:
+                Statistics.addCompleteCustomer(c)
+        # amount of complete customers:
+        print("amount of complete customers: " + str(len(Statistics._completeCustomers)))
+        # average time complete visit
+        print("average visit  of K1: " + str(Statistics.averageCompleteShoppingTime("K1")) + "s")
+        print("average visit time of K2: " + str(Statistics.averageCompleteShoppingTime("K2")) + "s")
+        # print("average visit time in general: " + Statistics.averageCompleteShoppingTime())
+        # time last customer left:
+        # print("last costumer left at: " + str(Statistics.stations["out"].lastCustomer.totalTimeInMarket) + "s")
+
+    def fullyServedCustomers(self):
         return
 
-    def serveCustomer(self, servings):
-        self.lock.acquire()
-        self.work(servings)
-        customer = self.customerQueue.pop()
-        print(self.name + " just served: " + customer.name)
-        self.totalServedCustomers = self.totalServedCustomers + 1
-        self.lastCustomer = customer
-        self.lock.release()
-        return
+    @staticmethod
+    def setLastCustomerTime(customer, time):
+        Statistics._lastCustomerTime = {customer: time}
 
-    def work(self, servings):
-        print("serving ", self.name)
-        time.sleep(self.servingTime * servings * sleepFactor)
+    @staticmethod
+    def addCompleteCustomer(customer):
+        Statistics._completeCustomers.append(customer)
 
-    def queuedCustomers(self):
-        return len(self.customerQueue)
+    @staticmethod
+    def setCompleteShoppingTime(customer, time):
+        Statistics._completeShoppingTimes[customer] = time
 
-    def isNotEmpty(self):
-        return len(self.customerQueue) > 1
+    @staticmethod
+    def addDroppedStationCustomers(station, droppedCustomers):
+        Statistics.droppedStationCustomers[station] = droppedCustomers
+
+    @staticmethod
+    def lastCustomerTime():
+        return Statistics._lastCustomerTime
+
+    @staticmethod
+    def servedCustomers():
+        return Statistics._servedCustomers
+
+    @staticmethod
+    def completeShoppingTimes():
+        return Statistics._completeShoppingTimes
+
+    @staticmethod
+    def averageCompleteShoppingTime(customerType):
+        shoppingTimes = []
+        totalTime = 0
+        for k in Statistics._completeCustomers:
+            if k.name.split('-')[0] == customerType:
+                shoppingTimes.append(k)
+                totalTime += k.totalTimeInMarket
+        return totalTime / len(shoppingTimes)
+
+    @staticmethod
+    def droppedStationCustomerPercentages(station):
+        return Statistics.droppedStationCustomers[station] / Statistics.customers
