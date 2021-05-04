@@ -3,9 +3,7 @@ import time
 from statistics import Statistics
 from threading import Thread, Timer
 from event import Event, EventType, EventArgs
-from config import sleepFactor
-
-
+from config import sleepFactor, customerK1SpawnTime, customerK2SpawnTime
 
 class Customer(Thread):
     def __init__(self, name, stationVisits, startTime, appendEvent, removeEvent, terminate):
@@ -28,8 +26,6 @@ class Customer(Thread):
         self.enter()
         self.spawnNext()
         return
-
-
 
     def arriveStation(self, args):
         if args.stationId == len(self.stationVisits):
@@ -76,7 +72,7 @@ class Customer(Thread):
                          self.startTime, 0, self.arriveStation, EventArgs(1, self.startTime)))
 
     def spawn(self):
-        print("spawning ", self.name)
+        print("spawning " + self.name + " at time" + str(self.startTime))
         Statistics.addCustomer(self)
         time.sleep(self.startTime * sleepFactor)
 
@@ -87,9 +83,10 @@ class Customer(Thread):
         customer = Customer(self.name, self.stationVisits, self.startTime,
                             self.appendEvent, self.removeEvent, self.terminate)
         nameSplit = self.name.split("-")
-        if len(nameSplit) > 1:
-            customer.name = f'{nameSplit[0]}-{int(nameSplit[1])+1}'
-        else:
-            customer.name = f'{nameSplit[0]}'
+        customer.name = f'{nameSplit[0]}-{int(nameSplit[1])+1}'
+        if nameSplit[0] == "K1":
+            customer.startTime += customerK1SpawnTime
+        elif nameSplit[0] == "K2":
+            customer.startTime += customerK2SpawnTime
 
         customer.start()

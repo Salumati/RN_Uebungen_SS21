@@ -7,7 +7,6 @@ from threading import Thread, Event
 import time
 from statistics import Statistics
 
-
 class Supermarket:
     def __init__(self):
         self.eventQueue = EventQueue()
@@ -45,7 +44,7 @@ class Supermarket:
         self.customerK2.start()
 
         print("made customers, going to sleep")
-        # time.sleep(1)
+        time.sleep(terminateAfter * terminateFactor)
         self.terminate.set()
         print("customersproduction has be terminated")
 
@@ -59,16 +58,6 @@ class Supermarket:
             print(i)
         """
         Statistics.showStatistics()
-
-        """
-        print("served customers: ", Statistics.servedCustomers())
-        print("average shopping time K1: ",
-              Statistics.averageCompleteShoppingTime("K1"))
-        print("average shopping time K2: ",
-              Statistics.averageCompleteShoppingTime("K2"))
-        for station in self.stations:
-            print("dropped customer percentage for station: ", station,
-                  Statistics.droppedStationCustomerPercentages(station))"""
 
 
 supermarket = Supermarket()
