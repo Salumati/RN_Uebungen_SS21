@@ -21,7 +21,7 @@ class Statistics:
         print("\nStation statistic:")
         for k in Statistics.stations:
             print(" " + Statistics.stations[k].name)
-            print(" last served customer: " + str(Statistics.stations[k].lastCustomer.name) + " at " + str(Statistics.stations[k].lastCustomer.totalTimeInMarket) + "s")
+            print(" last served customer: " + str(Statistics.stations[k].lastCustomer.name) + " at " + str(Statistics.stations[k].lastCustomer.totalTime()) + "s")
             print(" number of served customers: " + str(Statistics.stations[k].totalServedCustomers))
             print(" customer that left  out the Station: " + str(Statistics.stations[k].totalLeapCustomers/Statistics.stations[k].totalServedCustomers) + "%")
             # prozentsatz an Kunden die die station auslassen
@@ -29,7 +29,9 @@ class Statistics:
     @staticmethod
     def showCustomerStatistc():
         print("\nCustomer Statistic:")
+        print("Statistics.customers ", Statistics.customers)
         for c in Statistics.customers:
+            print("didCompleteShopping", c.didCompleteShopping)
             if c.didCompleteShopping:
                 Statistics.addCompleteCustomer(c)
         # amount of complete customers:
@@ -39,7 +41,7 @@ class Statistics:
         print("average visit time of K2: " + str(Statistics.averageCompleteShoppingTime("K2")) + "s")
         # print("average visit time in general: " + Statistics.averageCompleteShoppingTime())
         # time last customer left:
-        print("last costumer left at: " + str(Statistics.stations["out"].lastCustomer.totalTimeInMarket) + "s")
+        print("last costumer left at: " + str(Statistics.stations["out"].lastCustomer.totalTime()) + "s")
 
 
     def fullyServedCustomers(self):
@@ -64,10 +66,6 @@ class Statistics:
     @staticmethod
     def lastCustomerTime():
         return Statistics._lastCustomerTime
-    
-    @staticmethod
-    def servedCustomers():
-        return Statistics._servedCustomers
 
     @staticmethod
     def completeShoppingTimes():
@@ -77,11 +75,14 @@ class Statistics:
     def averageCompleteShoppingTime(customerType):
         shoppingTimes = []
         totalTime = 0
+        print("Statistics._completeCustomers ", Statistics._completeCustomers)
         for k in Statistics._completeCustomers:
             if k.name.split('-')[0] == customerType:
                 shoppingTimes.append(k)
-                totalTime += k.totalTimeInMarket
-        return totalTime / len(shoppingTimes)
+                totalTime += k.totalTime()
+        if len(shoppingTimes) > 0:
+            return totalTime / len(shoppingTimes)
+        return 0
     
     @staticmethod
     def droppedStationCustomerPercentages(station):

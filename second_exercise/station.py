@@ -15,7 +15,7 @@ class Station():
         self.totalLeapCustomers = 0
 
     def queueCustomer(self, customer, maxWait):
-        if len(self.customerQueue) <= maxWait:
+        if len(self.customerQueue) < maxWait:
             self.lock.acquire()
             print(self.name + " queued customer: " + customer.name)
             self.customerQueue.append(customer)
@@ -25,8 +25,9 @@ class Station():
         return
         
     def serveCustomer(self, servings):
-        self.lock.acquire()
         self.work(servings)
+        self.lock.acquire()
+        print("popping at station ", self.name)
         customer = self.customerQueue.pop()
         print(self.name + " just served: " + customer.name)
         self.totalServedCustomers = self.totalServedCustomers + 1
@@ -35,7 +36,6 @@ class Station():
         return
 
     def work(self, servings):
-        print("serving ", self.name)
         time.sleep(self.servingTime * servings * sleepFactor)
 
     def queuedCustomers(self):

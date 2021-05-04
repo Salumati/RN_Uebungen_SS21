@@ -4,6 +4,7 @@ from statistics import Statistics
 from threading import Thread, Timer
 from event import Event, EventType, EventArgs
 from config import sleepFactor, customerK1SpawnTime, customerK2SpawnTime
+from datetime import datetime
 
 class Customer(Thread):
     def __init__(self, name, stationVisits, startTime, appendEvent, removeEvent, terminate):
@@ -14,13 +15,13 @@ class Customer(Thread):
         self.appendEvent = appendEvent
         self.removeEvent = removeEvent
         self.terminate = terminate
-        self.totalTimeInMarket = 0
         self.didCompleteShopping = True
         # we assume the customer will visit all stations and set it false if they skip at least one
 
     def run(self):
         if self.terminate.is_set():
             return
+        self.startDate = datetime.now()
         self.spawn()
         self.startShopping()
         self.enter()
@@ -34,15 +35,13 @@ class Customer(Thread):
         stationVisit = self.stationVisits[args.stationId]
 
         time = args.time + stationVisit.arrivalTime
-        self.totalTimeInMarket += time
+        print("shouldnotSkip", stationVisit.shouldNotSkip(), stationVisit.station.name)
         if stationVisit.shouldNotSkip():
             stationVisit.do(self)
-            if stationVisit.station.isNotEmpty():
+            if stationVisit.maxWait > 0:
                 stationVisit.queue(self)
-            else:
-                self.appendEvent(Event(EventType.ENTER_STATION, time, 2,
+            self.appendEvent(Event(EventType.ENTER_STATION, time, 2,
                                  self.work, EventArgs(args.stationId, time)))
-
         else:
             self.didCompleteShopping = False
             self.appendEvent(Event(EventType.ENTER_STATION, time, 2,
@@ -57,13 +56,12 @@ class Customer(Thread):
                          self.leaveStation, EventArgs(args.stationId, time)))
 
     def leaveStation(self, args):
-        self.arriveStation(EventArgs(args.stationId+1, args.time))
-
         stationVisit = self.stationVisits[args.stationId]
-        if stationVisit.station.isNotEmpty():
-            stationVisit.serve()
-            stationVisit.station.customerQueue[0].appendEvent(
-                Event(EventType.LEAVE_STATION, args.time, 1, self.leaveStation, args))
+        print("serving customer ", self.name, "at ", stationVisit.station.name)
+        stationVisit.serve()
+       
+        self.endDate = datetime.now()    
+        self.arriveStation(EventArgs(args.stationId+1, args.time))
 
         return
 
@@ -71,8 +69,11 @@ class Customer(Thread):
         self.appendEvent(Event(EventType.START_SHOPPING,
                          self.startTime, 0, self.arriveStation, EventArgs(1, self.startTime)))
 
+    def totalTime(self):
+        self.endDate - self.startDate
+
     def spawn(self):
-        print("spawning " + self.name + " at time" + str(self.startTime))
+        print("spawning " + self.name + " at time " + str(self.startTime))
         Statistics.addCustomer(self)
         time.sleep(self.startTime * sleepFactor)
 
