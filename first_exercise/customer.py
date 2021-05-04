@@ -5,7 +5,7 @@ from event import Event
 from event import EventType
 from event import EventArgs
 
-from statistics import Statistics
+from statistics import Statistic
 
 
 class Customer:
@@ -47,6 +47,7 @@ class Customer:
                                  self.work, self.name, stationVisit.station.name, EventArgs(args.stationId, time)))
 
         else:
+            self.didCompleteShopping = False
             self.appendEvent(Event(EventType.ENTER_STATION, time, 2,
                              self.arriveStation, self.name, stationVisit.station.name, EventArgs(args.stationId+1, time)))
 
@@ -88,5 +89,5 @@ class Customer:
             return
         customer.appendEvent = self.appendEvent
         customer.removeEvent = self.removeEvent
-        Statistics.addCustomer(customer)
+        Statistic.addCustomer(customer)
         customer.startShopping()

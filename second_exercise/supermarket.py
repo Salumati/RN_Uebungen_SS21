@@ -26,7 +26,8 @@ class Supermarket:
             "sau": sausage,
             "cheese": cheese,
             "chout": checkout,
-            "out": outrance}
+            "out": outrance
+        }
 
         stationVisitsK1 = [StationVisit(entrance, customerK1SpawnTime), StationVisit(baker, 10, 10, 10), StationVisit(
             sausage, 30, 5, 10), StationVisit(cheese, 45, 3, 5), StationVisit(checkout, 60, 30, 30), StationVisit(outrance, 0)]

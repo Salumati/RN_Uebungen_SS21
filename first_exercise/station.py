@@ -28,7 +28,7 @@ class Station:
         return
 
     def work(self, servings):
-        time.sleep(self.servingTime * servings)
+        self.serveCustomer()
 
     def queuedCustomers(self):
         return len(self.customerQueue)

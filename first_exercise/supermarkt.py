@@ -2,7 +2,7 @@ from event_queue import EventQueue
 from customer import Customer
 from station import Station
 from station_visit import StationVisit
-from statistics import Statistics
+from statistics import Statistic
 
 # in seconds
 customerK1StartTime = 0
@@ -22,13 +22,14 @@ class Supermarket:
         checkout = Station("Kasse", 5)
         outrance = Station("Ausgang")
 
-        Statistics.stations = {
+        self.stations = {
             "ent": entrance,
             "bak": baker,
             "sau": sausage,
             "cheese": cheese,
             "chout": checkout,
-            "out": outrance}
+            "out": outrance
+        }
 
         stationVisitsK1 = [StationVisit(entrance, 200), StationVisit(baker, 10, 10, 10), StationVisit(
             sausage, 30, 5, 10), StationVisit(cheese, 45, 3, 5), StationVisit(checkout, 60, 30, 30), StationVisit(outrance, 0)]
@@ -41,7 +42,7 @@ class Supermarket:
         self.customerK2 = Customer("K2-1", stationVisitsK2, customerK2StartTime,
                                    customerK2SpawnTime, self.eventQueue.push, self.eventQueue.pop)
 
-    def run(self, stopAt=(200)):
+    def run(self, stopAt=(50)):
         print("start Simulation")
         self.customerK1.startShopping(stopAt)
         self.customerK2.startShopping(stopAt)
@@ -54,7 +55,19 @@ class Supermarket:
         for i in l:
             print(i)
 
-        Statistics.showStatistics()
+        Statistic.showCustomerStatistc()
+
+        for k in self.stations:
+            print(k)
+            print(" " + self.stations[k].name)
+            print(" last served customer: " + str(self.stations[k].lastCustomer.name) + " at " + str(
+                self.stations[k].lastCustomer.totalTimeInMarket) + "s")
+            print(" number of served customers: " + str(self.stations[k].totalServedCustomers))
+            print(" customer that left  out the Station: " + str(
+                self.stations[k].totalLeapCustomers / self.stations[k].totalServedCustomers) + "%")
+            self.showStatistics()
+
+
 
         """ 
         print("station statistics:")

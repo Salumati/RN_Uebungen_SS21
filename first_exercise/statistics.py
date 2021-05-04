@@ -1,4 +1,4 @@
-class Statistics:
+class Statistic:
     _completeCustomers = []
     customers = []
     stations = {}
@@ -7,36 +7,36 @@ class Statistics:
 
     @staticmethod
     def addCustomer(customer):
-        Statistics.customers.append(customer)
+        Statistic.customers.append(customer)
 
     @staticmethod
     def showStatistics():
-        Statistics.showCustomerStatistc()
-        Statistics.showStationStatistic()
+        Statistic.showCustomerStatistc()
+        Statistic.showStationStatistic()
 
     @staticmethod
     def showStationStatistic():
         print("\nStation statistic:")
-        for k in Statistics.stations:
-            print(" " + Statistics.stations[k].name)
-            print(" last served customer: " + str(Statistics.stations[k].lastCustomer.name) + " at " + str(
-                Statistics.stations[k].lastCustomer.totalTimeInMarket) + "s")
-            print(" number of served customers: " + str(Statistics.stations[k].totalServedCustomers))
+        for k in Statistic.stations:
+            print(" " + Statistic.stations[k].name)
+            print(" last served customer: " + str(Statistic.stations[k].lastCustomer.name) + " at " + str(
+                Statistic.stations[k].lastCustomer.totalTimeInMarket) + "s")
+            print(" number of served customers: " + str(Statistic.stations[k].totalServedCustomers))
             print(" customer that left  out the Station: " + str(
-                Statistics.stations[k].totalLeapCustomers / Statistics.stations[k].totalServedCustomers) + "%")
+                Statistic.stations[k].totalLeapCustomers / Statistic.stations[k].totalServedCustomers) + "%")
             # prozentsatz an Kunden die die station auslassen
 
     @staticmethod
     def showCustomerStatistc():
         print("\nCustomer Statistic:")
-        for c in Statistics.customers:
+        for c in Statistic.customers:
             if c.didCompleteShopping:
-                Statistics.addCompleteCustomer(c)
+                Statistic.addCompleteCustomer(c)
         # amount of complete customers:
-        print("amount of complete customers: " + str(len(Statistics._completeCustomers)))
+        print("amount of complete customers: " + str(len(Statistic._completeCustomers)))
         # average time complete visit
-        print("average visit  of K1: " + str(Statistics.averageCompleteShoppingTime("K1")) + "s")
-        print("average visit time of K2: " + str(Statistics.averageCompleteShoppingTime("K2")) + "s")
+        print("average visit  of K1: " + str(Statistic.averageCompleteShoppingTime("K1")) + "s")
+        print("average visit time of K2: " + str(Statistic.averageCompleteShoppingTime("K2")) + "s")
         # print("average visit time in general: " + Statistics.averageCompleteShoppingTime())
         # time last customer left:
         # print("last costumer left at: " + str(Statistics.stations["out"].lastCustomer.totalTimeInMarket) + "s")
@@ -46,42 +46,45 @@ class Statistics:
 
     @staticmethod
     def setLastCustomerTime(customer, time):
-        Statistics._lastCustomerTime = {customer: time}
+        Statistic._lastCustomerTime = {customer: time}
 
     @staticmethod
     def addCompleteCustomer(customer):
-        Statistics._completeCustomers.append(customer)
+        Statistic._completeCustomers.append(customer)
 
     @staticmethod
     def setCompleteShoppingTime(customer, time):
-        Statistics._completeShoppingTimes[customer] = time
+        Statistic._completeShoppingTimes[customer] = time
 
     @staticmethod
     def addDroppedStationCustomers(station, droppedCustomers):
-        Statistics.droppedStationCustomers[station] = droppedCustomers
+        Statistic.droppedStationCustomers[station] = droppedCustomers
 
     @staticmethod
     def lastCustomerTime():
-        return Statistics._lastCustomerTime
+        return Statistic._lastCustomerTime
 
     @staticmethod
     def servedCustomers():
-        return Statistics._servedCustomers
+        return Statistic._servedCustomers
 
     @staticmethod
     def completeShoppingTimes():
-        return Statistics._completeShoppingTimes
+        return Statistic._completeShoppingTimes
 
     @staticmethod
     def averageCompleteShoppingTime(customerType):
         shoppingTimes = []
         totalTime = 0
-        for k in Statistics._completeCustomers:
+        for k in Statistic._completeCustomers:
             if k.name.split('-')[0] == customerType:
                 shoppingTimes.append(k)
                 totalTime += k.totalTimeInMarket
-        return totalTime / len(shoppingTimes)
+        if(totalTime > 0):
+            totalTime = totalTime / len(shoppingTimes)
+
+        return totalTime
 
     @staticmethod
     def droppedStationCustomerPercentages(station):
-        return Statistics.droppedStationCustomers[station] / Statistics.customers
+        return Statistic.droppedStationCustomers[station] / Statistic.customers
