@@ -29,7 +29,8 @@ class Customer(Thread):
         return
 
     def arriveStation(self, args):
-        if args.stationId == len(self.stationVisits):
+        print("stationId", args.stationId, "len(self.stationVisits)-1", len(self.stationVisits)-1, "customer name", self.name)
+        if args.stationId == len(self.stationVisits)-1:
             return
 
         stationVisit = self.stationVisits[args.stationId]
