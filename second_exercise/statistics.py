@@ -31,9 +31,7 @@ class Statistics:
     @staticmethod
     def showCustomerStatistc():
         print("\nCustomer Statistic:")
-        print("Statistics.customers ", Statistics.customers)
         for c in Statistics.customers:
-            print("didCompleteShopping", c.didCompleteShopping)
             if c.didCompleteShopping:
                 Statistics.addCompleteCustomer(c)
         # amount of complete customers:
