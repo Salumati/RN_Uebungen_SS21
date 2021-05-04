@@ -18,8 +18,8 @@ class Customer:
 
     def startShopping(self, endTime=18000):
         # self.start()
-        self.spawnCustomer(endTime)
         self.startEvent()
+        self.spawnCustomer(endTime)
         self.stationVisits[0].do()
 
         return
@@ -53,7 +53,7 @@ class Customer:
         stationVisit = self.stationVisits[args.stationId]
         time = args.time + stationVisit.servingTime()
         self.appendEvent(Event(EventType.LEAVE_STATION, time, 1,
-                         self.leaveStation, self.name, "", EventArgs(args.stationId, time)))
+                         self.leaveStation, self.name, stationVisit.station.name, EventArgs(args.stationId, time)))
 
     def leaveStation(self, args):
         self.arriveStation(EventArgs(args.stationId+1, args.time))
@@ -83,4 +83,6 @@ class Customer:
         customer.startTime += customer.spawnTime
         if (customer.startTime >= endTime):
             return
+        customer.appendEvent = self.appendEvent
+        customer.removeEvent = self.removeEvent
         customer.startShopping()

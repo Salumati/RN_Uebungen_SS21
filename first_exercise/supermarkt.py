@@ -35,15 +35,17 @@ class Supermarket:
                                    customerK2SpawnTime, self.eventQueue.push, self.eventQueue.pop)
 
     def run(self, stopAt=(30*60)):
+        print("start Simulation")
         self.customerK1.startShopping(stopAt)
         self.customerK2.startShopping(stopAt)
+        print("created Events!")
         self.eventQueue.work()
+        print("worked through queue")
         l = list(self.eventQueue.queue)
         l.sort()
 
         for i in l:
             print(i)
-        print(l)
 
         print("station statistics:")
         for s in self.listOfStations:
