@@ -27,7 +27,6 @@ class StationVisit:
         self.station.serveCustomer(self.servings)
 
     def shouldNotSkip(self):
-        # needs locks
         self.lock.acquire()
         shouldNotSkip = self.maxWait == 0 or (self.maxWait > self.station.queuedCustomers())
         self.lock.release()

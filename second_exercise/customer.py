@@ -39,9 +39,8 @@ class Customer(Thread):
         time = args.time + stationVisit.arrivalTime
 
         if stationVisit.shouldNotSkip():
+            stationVisit.queue(self)
             stationVisit.do(self)
-            if stationVisit.maxWait > 0:
-                stationVisit.queue(self)
             self.appendEvent(Event(EventType.ENTER_STATION, time, 2,
                                  self.work, EventArgs(args.stationId, time)))
         else:

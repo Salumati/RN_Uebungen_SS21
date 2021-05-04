@@ -29,10 +29,11 @@ class Station():
         self.work(servings)
         self.lock.acquire()
         print("popping at station ", self.name)
-        customer = self.customerQueue.pop()
-        print(self.name + " just served: " + customer.name)
+        if len(self.customerQueue) > 0:
+            customer = self.customerQueue.pop()
+            print(self.name + " just served: " + customer.name)
+            self.lastCustomer = customer
         self.totalServedCustomers = self.totalServedCustomers + 1
-        self.lastCustomer = customer
         self.lock.release()
         return
 
