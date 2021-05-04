@@ -18,17 +18,17 @@ class Statistics:
 
     @staticmethod
     def showStationStatistic():
-        print("Station statistic:")
-        for s in Statistics.stations:
-            print(" " + s.name)
-            print(" last served customer: " + str(s.lastCustomer.name) + " at " + str(s.lastCustomer.totalTimeInMarket))
-            print(" number of served customers: " + str(s.totalServedCustomers))
-            print(" customer that left  out the Station: " + str(s.totalLeapCustomers/s.totalServedCustomers) + "%")
+        print("\nStation statistic:")
+        for k in Statistics.stations:
+            print(" " + Statistics.stations[k].name)
+            print(" last served customer: " + str(Statistics.stations[k].lastCustomer.name) + " at " + str(Statistics.stations[k].lastCustomer.totalTimeInMarket) + "s")
+            print(" number of served customers: " + str(Statistics.stations[k].totalServedCustomers))
+            print(" customer that left  out the Station: " + str(Statistics.stations[k].totalLeapCustomers/Statistics.stations[k].totalServedCustomers) + "%")
             # prozentsatz an Kunden die die station auslassen
 
     @staticmethod
     def showCustomerStatistc():
-        print("Customer Statistic:")
+        print("\nCustomer Statistic:")
         for c in Statistics.customers:
             if c.didCompleteShopping:
                 Statistics.addCompleteCustomer(c)
@@ -39,7 +39,7 @@ class Statistics:
         print("average visit time of K2: " + str(Statistics.averageCompleteShoppingTime("K2")) + "s")
         # print("average visit time in general: " + Statistics.averageCompleteShoppingTime())
         # time last customer left:
-        print("last costumer left at: " + str(Statistics.customers.pop().totalTimeInMarket) + "s")
+        print("last costumer left at: " + str(Statistics.stations["out"].lastCustomer.totalTimeInMarket) + "s")
 
 
     def fullyServedCustomers(self):
