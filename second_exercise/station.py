@@ -3,6 +3,7 @@ import event_queue
 import time
 from threading import Lock
 from config import sleepFactor
+import copy
 
 class Station():
     def __init__(self, name, servingTime = 0):
@@ -43,3 +44,6 @@ class Station():
 
     def isNotEmpty(self):
         return len(self.customerQueue) > 1
+
+    def copyShallow(self):
+        return Station(self.name, self.servingTime)

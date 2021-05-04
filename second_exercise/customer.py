@@ -5,6 +5,7 @@ from threading import Thread, Timer
 from event import Event, EventType, EventArgs
 from config import sleepFactor, customerK1SpawnTime, customerK2SpawnTime
 from datetime import datetime
+from extern import stationVisitsK1, stationVisitsK2, stationVisitsCopy
 
 class Customer(Thread):
     def __init__(self, name, stationVisits, startTime, appendEvent, removeEvent, terminate):
@@ -29,14 +30,14 @@ class Customer(Thread):
         return
 
     def arriveStation(self, args):
-        print("stationId", args.stationId, "len(self.stationVisits)-1", len(self.stationVisits)-1, "customer name", self.name)
-        if args.stationId == len(self.stationVisits)-1:
+        if self.stationVisits[args.stationId].visited():
+            print("args.stationId == len(self.stationVisits)", self.name)
             return
 
         stationVisit = self.stationVisits[args.stationId]
 
         time = args.time + stationVisit.arrivalTime
-        print("shouldnotSkip", stationVisit.shouldNotSkip(), stationVisit.station.name)
+
         if stationVisit.shouldNotSkip():
             stationVisit.do(self)
             if stationVisit.maxWait > 0:
@@ -44,6 +45,7 @@ class Customer(Thread):
             self.appendEvent(Event(EventType.ENTER_STATION, time, 2,
                                  self.work, EventArgs(args.stationId, time)))
         else:
+            print("shouldSkip", self.name)
             self.didCompleteShopping = False
             self.appendEvent(Event(EventType.ENTER_STATION, time, 2,
                              self.arriveStation, EventArgs(args.stationId+1, time)))
@@ -82,13 +84,15 @@ class Customer(Thread):
         self.stationVisits[0].do(self)
 
     def spawnNext(self):
-        customer = Customer(self.name, self.stationVisits, self.startTime,
+        customer = Customer(self.name, [], self.startTime,
                             self.appendEvent, self.removeEvent, self.terminate)
         nameSplit = self.name.split("-")
         customer.name = f'{nameSplit[0]}-{int(nameSplit[1])+1}'
         if nameSplit[0] == "K1":
             customer.startTime += customerK1SpawnTime
+            customer.stationVisits = stationVisitsCopy(stationVisitsK1)
         elif nameSplit[0] == "K2":
             customer.startTime += customerK2SpawnTime
+            customer.stationVisits = stationVisitsCopy(stationVisitsK2)
 
         customer.start()

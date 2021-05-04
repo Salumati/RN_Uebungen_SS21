@@ -6,20 +6,13 @@ from config import customerK1StartTime, customerK1SpawnTime, customerK2StartTime
 from threading import Thread, Event
 import time
 from statistics import Statistics
+from extern import entrance, baker, sausage, cheese, checkout, outrance, stationVisitsK1, stationVisitsK2, stationVisitsCopy
 
 class Supermarket:
     def __init__(self):
         self.eventQueue = EventQueue()
         self.terminate = Event()
 
-        entrance = Station("Eingang")
-        baker = Station("Bäcker", 10)
-        sausage = Station("Wurst", 30)
-        cheese = Station("Käse", 60)
-        checkout = Station("Kasse", 5)
-        outrance = Station("Ausgang")
-
-        self.stations = [entrance, baker, sausage, cheese, checkout, outrance]
         Statistics.stations = {
             "ent": entrance,
             "bak": baker,
@@ -28,16 +21,11 @@ class Supermarket:
             "chout": checkout,
             "out": outrance}
 
-        stationVisitsK1 = [StationVisit(entrance, customerK1SpawnTime), StationVisit(baker, 10, 10, 10), StationVisit(
-            sausage, 30, 5, 10), StationVisit(cheese, 45, 3, 5), StationVisit(checkout, 60, 30, 30), StationVisit(outrance, 0)]
-        stationVisitsK2 = [StationVisit(entrance, customerK2SpawnTime), StationVisit(
-            sausage, 30, 2, 5), StationVisit(checkout, 60, 3, 20), StationVisit(baker, 3, 20), StationVisit(outrance, 0)]
-
         self.customerK1 = Customer(
-            "K1-1", stationVisitsK1, customerK1StartTime, self.eventQueue.push, self.eventQueue.pop, self.terminate)
+            "K1-1", stationVisitsCopy(stationVisitsK1), customerK1StartTime, self.eventQueue.push, self.eventQueue.pop, self.terminate)
 
         self.customerK2 = Customer(
-            "K2-1", stationVisitsK2, customerK2StartTime, self.eventQueue.push, self.eventQueue.pop, self.terminate)
+            "K2-1", stationVisitsCopy(stationVisitsK2), customerK2StartTime, self.eventQueue.push, self.eventQueue.pop, self.terminate)
 
     def run(self):
         self.customerK1.start()

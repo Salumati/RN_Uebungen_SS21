@@ -35,3 +35,6 @@ class StationVisit:
 
     def servingTime(self):
         return self.servings * self.station.servingTime
+
+    def copyShallow(self):
+        return StationVisit(self.station.copyShallow(), self.arrivalTime, self.servings, self.maxWait)
