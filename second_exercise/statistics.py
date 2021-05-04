@@ -13,7 +13,7 @@ class Statistics:
         Statistics._lastCustomerTime = {customer: time}
 
     @staticmethod
-    def addServedCustomer(customer):
+    def addCompletelyServedCustomer(customer):
         Statistics._servedCustomers.append(customer)
 
     @staticmethod
@@ -21,16 +21,21 @@ class Statistics:
         Statistics._completeShoppingTimes[customer] = time
 
     @staticmethod
-    def addDroppedStationCustomers(station, droppedCustomers):
-        Statistics.droppedStationCustomers[station] = droppedCustomers
+    def addDroppedStationCustomer(station, droppedCustomer):
+        if station in Statistics.droppedStationCustomers:
+            Statistics.droppedStationCustomers[station].append(droppedCustomer)
+        else:
+            Statistics.droppedStationCustomers[station] = []
 
     @staticmethod
-    def lastCustomerTime():
-        return Statistics._lastCustomerTime
+    def lastCustomerTime(customer):
+        if customer in Statistics._lastCustomerTime:
+            return Statistics._lastCustomerTime[customer]
+        return 0
     
     @staticmethod
     def servedCustomers():
-        return Statistics._servedCustomers
+        return len(Statistics._servedCustomers)
 
     @staticmethod
     def completeShoppingTimes():
@@ -44,8 +49,13 @@ class Statistics:
             if k.split('-')[0] == customerType:
                 shoppingTimes.append(v)
                 totalTime += v
-        return totalTime / len(shoppingTimes)
+        if len(shoppingTimes) > 0:
+            return totalTime / len(shoppingTimes)
+
+        return 0
     
     @staticmethod
     def droppedStationCustomerPercentages(station):
-        return Statistics.droppedStationCustomers[station] / Statistics.customers
+        if station in Statistics.droppedStationCustomers:
+            return len(Statistics.droppedStationCustomers[station]) / len(Statistics.customers)
+        return 0

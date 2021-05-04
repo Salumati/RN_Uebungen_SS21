@@ -3,7 +3,8 @@ import time
 from threading import Thread, Timer
 from event import Event, EventType, EventArgs
 from config import sleepFactor
-
+from statistics import Statistics
+from datetime import datetime
 
 class Customer(Thread):
     def __init__(self, name, stationVisits, startTime, appendEvent, removeEvent, terminate):
@@ -18,10 +19,12 @@ class Customer(Thread):
     def run(self):
         if self.terminate.is_set():
             return
+        Statistics.addCustomer(self)
         self.spawn()
         self.startShopping()
         self.enter()
         self.spawnNext()
+        self.startDate = datetime.now()
 
         return
 
@@ -34,13 +37,11 @@ class Customer(Thread):
         time = args.time + stationVisit.arrivalTime
         if stationVisit.shouldNotSkip():
             stationVisit.do()
-            if stationVisit.station.isNotEmpty():
-                stationVisit.queue(self)
-            else:
-                self.appendEvent(Event(EventType.ENTER_STATION, time, 2,
+            stationVisit.queue(self)
+            self.appendEvent(Event(EventType.ENTER_STATION, time, 2,
                                  self.work, EventArgs(args.stationId, time)))
-
         else:
+            Statistics.addDroppedStationCustomer(stationVisit.station.name, self)
             self.appendEvent(Event(EventType.ENTER_STATION, time, 2,
                              self.arriveStation, EventArgs(args.stationId+1, time)))
 
@@ -58,6 +59,10 @@ class Customer(Thread):
         stationVisit = self.stationVisits[args.stationId]
         if stationVisit.station.isNotEmpty():
             stationVisit.serve()
+            Statistics.setLastCustomerTime(self.name, datetime.now())
+            if args.stationId == len(self.stationVisits)-1:
+                Statistics.addCompletelyServedCustomer(self)
+                Statistics.setCompleteShoppingTime(self, datetime.now() - self.startDate)
             stationVisit.station.customerQueue[0].appendEvent(
                 Event(EventType.LEAVE_STATION, args.time, 1, self.leaveStation, args))
 
@@ -79,7 +84,7 @@ class Customer(Thread):
                             self.appendEvent, self.removeEvent, self.terminate)
         nameSplit = self.name.split("-")
         if len(nameSplit) > 1:
-            customer.name = f'{nameSplit[0]}-{nameSplit[1]+1}'
+            customer.name = f'{nameSplit[0]}-{str(int(nameSplit[1])+1)}'
         else:
             customer.name = f'{nameSplit[0]}'
 

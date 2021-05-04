@@ -28,10 +28,10 @@ class Supermarket:
             sausage, 30, 2, 5), StationVisit(checkout, 60, 3, 20), StationVisit(baker, 3, 20), StationVisit(outrance, 0)]
 
         self.customerK1 = Customer(
-            "K1", stationVisitsK1, customerK1StartTime, self.eventQueue.push, self.eventQueue.pop, self.terminate)
+            "K1-1", stationVisitsK1, customerK1StartTime, self.eventQueue.push, self.eventQueue.pop, self.terminate)
 
         self.customerK2 = Customer(
-            "K2", stationVisitsK2, customerK2StartTime, self.eventQueue.push, self.eventQueue.pop, self.terminate)
+            "K2-1", stationVisitsK2, customerK2StartTime, self.eventQueue.push, self.eventQueue.pop, self.terminate)
 
     def run(self):
         self.customerK1.start()
@@ -48,13 +48,15 @@ class Supermarket:
         for i in l:
             print(i)
         print("served customers: ", Statistics.servedCustomers())
+        print("last customer time K1: ", Statistics.lastCustomerTime("K1"))
+        print("last customer time K2: ", Statistics.lastCustomerTime("K2"))
         print("average shopping time K1: ",
               Statistics.averageCompleteShoppingTime("K1"))
         print("average shopping time K2: ",
               Statistics.averageCompleteShoppingTime("K2"))
         for station in self.stations:
-            print("dropped customer percentage for station: ", station,
-                  Statistics.droppedStationCustomerPercentages(station))
+            print("dropped customer percentage for station: ", station.name,
+                  Statistics.droppedStationCustomerPercentages(station.name))
 
 
 supermarket = Supermarket()

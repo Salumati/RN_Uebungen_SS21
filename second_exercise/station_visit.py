@@ -12,7 +12,7 @@ class StationVisit:
 
     def do(self):
         self.hasBeenVisited = True
-        print("entering ", self.station)
+        print("entering ", self.station.name)
         time.sleep(self.arrivalTime * sleepFactor)
         return
 
@@ -20,6 +20,7 @@ class StationVisit:
         return self.hasBeenVisited
 
     def queue(self, customer):
+        print("queuing: ", customer.name)
         self.station.queueCustomer(customer, self.maxWait)
 
     def serve(self):
