@@ -35,6 +35,7 @@ class Customer(Thread):
 
         if args.stationId == len(self.stationVisits)-1:
             Statistics.stations["Ausgang"].setLastCustomer(self)
+            Statistics.stations["Ausgang"].addTotalServedCustomer()
             return
 
         stationVisit = self.stationVisits[args.stationId]
