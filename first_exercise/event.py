@@ -18,9 +18,8 @@ class EventArgs:
 
 
 class Event:
-    def __init__(self, type, time, priority, func, args):
+    def __init__(self, type, time, priority, func, customers, station, args):
         global id
-
         self.type = type
         self.time = time
         self.priority = priority
@@ -28,15 +27,17 @@ class Event:
         self.func = func
         self.args = args
 
+        self.customer = customers
+        self.station = station
+
         id += 1
 
     def execute(self):
         return self.func(self.args)
 
     def __lt__(self, other):
-        print(self, other, (self.time, self.priority, self.id) < (other.time, other.priority, other.id))
-
+        # print(self, other, (self.time, self.priority, self.id) < (other.time, other.priority, other.id))
         return (self.time, self.priority, self.id) < (other.time, other.priority, other.id)
 
     def __str__(self):
-        return f'Event: {self.type},{self.time},{self.priority},{self.id}'
+        return f'Event: {self.type}, {self.time}, {self.priority}, {self.id}, {self.customer}, {self.station}'

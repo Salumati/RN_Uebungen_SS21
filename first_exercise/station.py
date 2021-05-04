@@ -3,20 +3,28 @@ import event_queue
 import time
 
 class Station:
+
     def __init__(self, name, servingTime = 0):
         self.name = name
         self.servingTime = servingTime
         # TODO: Use queue structure
         self.customerQueue = []
+        self.lastCustomer = None
+        self.servedCustomers = 0
+        self.customerThatLeft = 0
 
     def queueCustomer(self, customer, maxWait):
         if len(self.customerQueue) <= maxWait:
             self.customerQueue.append(customer)
+            print(customer + " got queued in station " + self.name)
         return
         
     def serveCustomer(self, servings):
         #self.work(servings)
-        self.customerQueue.pop()
+        customer = self.customerQueue.pop()
+        print(customer + "was served in" + self.name)
+        self.lastCustomer = customer
+        self.servedCustomers = 1
         return
 
     def work(self, servings):
