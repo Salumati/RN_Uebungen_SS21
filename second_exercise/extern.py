@@ -17,5 +17,4 @@ def stationVisitsCopy(stationVisits):
     res = []
     for stationVisit in stationVisits:
         res.append(stationVisit.copyShallow())
-    print(res)
     return res

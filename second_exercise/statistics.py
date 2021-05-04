@@ -1,7 +1,9 @@
+from station_statistics import StationStatistics
+
 class Statistics:
     _completeCustomers = []
     customers = []
-    stations = {}
+    stations = {"Eingang": StationStatistics(), "Bäcker": StationStatistics(), "Wurst": StationStatistics(), "Käse": StationStatistics(), "Kasse": StationStatistics(), "Ausgang": StationStatistics()}
     droppedStationCustomers = {}
     _completeShoppingTimes = {}
 
@@ -20,7 +22,7 @@ class Statistics:
     def showStationStatistic():
         print("\nStation statistic:")
         for k in Statistics.stations:
-            print(" " + Statistics.stations[k].name)
+            print(k)
             print(" last served customer: " + str(Statistics.stations[k].lastCustomer.name) + " at " + str(Statistics.stations[k].lastCustomer.totalTime()) + "s")
             print(" number of served customers: " + str(Statistics.stations[k].totalServedCustomers))
             print(" customer that left  out the Station: " + str(Statistics.stations[k].totalLeapCustomers/Statistics.stations[k].totalServedCustomers) + "%")
@@ -41,7 +43,7 @@ class Statistics:
         print("average visit time of K2: " + str(Statistics.averageCompleteShoppingTime("K2")) + "s")
         # print("average visit time in general: " + Statistics.averageCompleteShoppingTime())
         # time last customer left:
-        print("last costumer left at: " + str(Statistics.stations["out"].lastCustomer.totalTime()) + "s")
+        print("last costumer left at: " + str(Statistics.stations["Ausgang"].lastCustomer.totalTime()) + "s")
 
 
     def fullyServedCustomers(self):

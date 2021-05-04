@@ -3,7 +3,7 @@ import event_queue
 import time
 from threading import Lock
 from config import sleepFactor
-import copy
+from statistics import Statistics
 
 class Station():
     def __init__(self, name, servingTime = 0):
@@ -11,9 +11,6 @@ class Station():
         self.lock = Lock()
         self.servingTime = servingTime
         self.customerQueue = []
-        self.lastCustomer = None
-        self.totalServedCustomers = 0
-        self.totalLeapCustomers = 0
 
     def queueCustomer(self, customer, maxWait):
         if len(self.customerQueue) < maxWait:
@@ -22,7 +19,7 @@ class Station():
             self.customerQueue.append(customer)
             self.lock.release()
         else:
-            self.totalLeapCustomers = self.totalLeapCustomers + 1
+            Statistics.stations[self.name].addTotalLeapCustomer()
         return
         
     def serveCustomer(self, servings):
@@ -32,8 +29,7 @@ class Station():
         if len(self.customerQueue) > 0:
             customer = self.customerQueue.pop()
             print(self.name + " just served: " + customer.name)
-            self.lastCustomer = customer
-        self.totalServedCustomers = self.totalServedCustomers + 1
+        Statistics.stations[self.name].addTotalServedCustomer()
         self.lock.release()
         return
 

@@ -31,7 +31,10 @@ class Customer(Thread):
 
     def arriveStation(self, args):
         if self.stationVisits[args.stationId].visited():
-            print("args.stationId == len(self.stationVisits)", self.name)
+            return
+
+        if args.stationId == len(self.stationVisits)-1:
+            Statistics.stations["Ausgang"].setLastCustomer(self)
             return
 
         stationVisit = self.stationVisits[args.stationId]
@@ -44,7 +47,6 @@ class Customer(Thread):
             self.appendEvent(Event(EventType.ENTER_STATION, time, 2,
                                  self.work, EventArgs(args.stationId, time)))
         else:
-            print("shouldSkip", self.name)
             self.didCompleteShopping = False
             self.appendEvent(Event(EventType.ENTER_STATION, time, 2,
                              self.arriveStation, EventArgs(args.stationId+1, time)))
@@ -61,6 +63,7 @@ class Customer(Thread):
         stationVisit = self.stationVisits[args.stationId]
         print("serving customer ", self.name, "at ", stationVisit.station.name)
         stationVisit.serve()
+        Statistics.stations[stationVisit.station.name].setLastCustomer(self)
        
         self.endDate = datetime.now()    
         self.arriveStation(EventArgs(args.stationId+1, args.time))
@@ -72,7 +75,7 @@ class Customer(Thread):
                          self.startTime, 0, self.arriveStation, EventArgs(1, self.startTime)))
 
     def totalTime(self):
-        self.endDate - self.startDate
+        return (self.endDate - self.startDate).total_seconds()
 
     def spawn(self):
         print("spawning " + self.name + " at time " + str(self.startTime))
@@ -81,6 +84,8 @@ class Customer(Thread):
 
     def enter(self):
         self.stationVisits[0].do(self)
+        Statistics.stations[self.stationVisits[0].station.name].setLastCustomer(self)
+        Statistics.stations[self.stationVisits[0].station.name].addTotalServedCustomer()
 
     def spawnNext(self):
         customer = Customer(self.name, [], self.startTime,

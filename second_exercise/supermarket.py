@@ -13,14 +13,6 @@ class Supermarket:
         self.eventQueue = EventQueue()
         self.terminate = Event()
 
-        Statistics.stations = {
-            "ent": entrance,
-            "bak": baker,
-            "sau": sausage,
-            "cheese": cheese,
-            "chout": checkout,
-            "out": outrance}
-
         self.customerK1 = Customer(
             "K1-1", stationVisitsCopy(stationVisitsK1), customerK1StartTime, self.eventQueue.push, self.eventQueue.pop, self.terminate)
 
