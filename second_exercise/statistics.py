@@ -77,7 +77,6 @@ class Statistics:
     def averageCompleteShoppingTime(customerType):
         shoppingTimes = []
         totalTime = 0
-        print("Statistics._completeCustomers ", Statistics._completeCustomers)
         for k in Statistics._completeCustomers:
             if k.name.split('-')[0] == customerType:
                 shoppingTimes.append(k)
